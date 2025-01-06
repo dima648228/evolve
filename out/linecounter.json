@@ -1,0 +1,229 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "e:\\Workspace\\Python\\Evolve v0.1",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2025-01-05 14:29:48",
+            "filesum": 30,
+            "codesum": 720,
+            "commentsum": 44,
+            "blanksum": 232,
+            "statistics": {
+                ".py": {
+                    "code": 713,
+                    "comment": 44,
+                    "blank": 229
+                },
+                ".ev": {
+                    "code": 7,
+                    "comment": 0,
+                    "blank": 3
+                }
+            },
+            "filelist": [
+                {
+                    "filename": "__pycache__\\error_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\interpreter.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\lexer.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\parser_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\shell.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\shell.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\string_with_arrows.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\token_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "debug\\__pycache__\\error_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "debug\\__pycache__\\error_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 16,
+                    "code": 52,
+                    "comment": 0,
+                    "filename": "debug\\error_.py"
+                },
+                {
+                    "blank": 1,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "examples\\functions.ev"
+                },
+                {
+                    "blank": 2,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "examples\\write.ev"
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\interpreter.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\interpreter.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 58,
+                    "code": 194,
+                    "comment": 9,
+                    "filename": "interpreter\\interpreter.py"
+                },
+                {
+                    "filename": "lexer\\__pycache__\\lexer.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "lexer\\__pycache__\\lexer.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "lexer\\__pycache__\\token_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "lexer\\__pycache__\\token_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 20,
+                    "code": 108,
+                    "comment": 1,
+                    "filename": "lexer\\lexer.py"
+                },
+                {
+                    "blank": 13,
+                    "code": 35,
+                    "comment": 6,
+                    "filename": "lexer\\token_.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": "main.py"
+                },
+                {
+                    "filename": "parser\\__pycache__\\parser_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\parser_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 77,
+                    "code": 214,
+                    "comment": 16,
+                    "filename": "parser\\parser_.py"
+                },
+                {
+                    "blank": 36,
+                    "code": 87,
+                    "comment": 6,
+                    "filename": "shell.py"
+                },
+                {
+                    "filename": "utils\\__pycache__\\string_with_arrows.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "utils\\__pycache__\\string_with_arrows.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 6,
+                    "code": 16,
+                    "comment": 6,
+                    "filename": "utils\\string_with_arrows.py"
+                }
+            ]
+        }
+    ]
+}

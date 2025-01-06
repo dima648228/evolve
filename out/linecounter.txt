@@ -1,0 +1,48 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2025-01-05 14:29:48
+count workspace : e:\Workspace\Python\Evolve v0.1
+total files : 30
+total code lines : 720
+total comment lines : 44
+total blank lines : 232
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |            .py|            713|             44|            229|     99|
+   |            .ev|              7|              0|              3|   0.97|
+   -------------------------------------------------------------------------
+__pycache__\error_.cpython-310.pyc, it is a binary file.
+__pycache__\interpreter.cpython-310.pyc, it is a binary file.
+__pycache__\lexer.cpython-310.pyc, it is a binary file.
+__pycache__\parser_.cpython-310.pyc, it is a binary file.
+__pycache__\shell.cpython-310.pyc, it is a binary file.
+__pycache__\shell.cpython-312.pyc, it is a binary file.
+__pycache__\string_with_arrows.cpython-310.pyc, it is a binary file.
+__pycache__\token_.cpython-310.pyc, it is a binary file.
+debug\__pycache__\error_.cpython-310.pyc, it is a binary file.
+debug\__pycache__\error_.cpython-312.pyc, it is a binary file.
+debug\error_.py, code is 52, comment is 0, blank is 16.
+examples\functions.ev, code is 4, comment is 0, blank is 1.
+examples\write.ev, code is 3, comment is 0, blank is 2.
+interpreter\__pycache__\interpreter.cpython-310.pyc, it is a binary file.
+interpreter\__pycache__\interpreter.cpython-312.pyc, it is a binary file.
+interpreter\interpreter.py, code is 194, comment is 9, blank is 58.
+lexer\__pycache__\lexer.cpython-310.pyc, it is a binary file.
+lexer\__pycache__\lexer.cpython-312.pyc, it is a binary file.
+lexer\__pycache__\token_.cpython-310.pyc, it is a binary file.
+lexer\__pycache__\token_.cpython-312.pyc, it is a binary file.
+lexer\lexer.py, code is 108, comment is 1, blank is 20.
+lexer\token_.py, code is 35, comment is 6, blank is 13.
+main.py, code is 7, comment is 0, blank is 3.
+parser\__pycache__\parser_.cpython-310.pyc, it is a binary file.
+parser\__pycache__\parser_.cpython-312.pyc, it is a binary file.
+parser\parser_.py, code is 214, comment is 16, blank is 77.
+shell.py, code is 87, comment is 6, blank is 36.
+utils\__pycache__\string_with_arrows.cpython-310.pyc, it is a binary file.
+utils\__pycache__\string_with_arrows.cpython-312.pyc, it is a binary file.
+utils\string_with_arrows.py, code is 16, comment is 6, blank is 6.
+===============================================================================

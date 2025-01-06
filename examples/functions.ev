@@ -1,0 +1,5 @@
+func displayText(text) {
+    write(text)
+}
+
+displayText("My Own Function!")

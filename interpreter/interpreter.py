@@ -1,5 +1,6 @@
 from lexer.token_ import *
 from debug.error_ import *
+from interpreter.builtin_funcs import BuiltInFunction
 
 # NUMBER CLASS
 
@@ -104,25 +105,17 @@ class RTResult:
 	def failure(self, error):
 		self.error = error
 		return self
-    
-class BuiltInFunction:
-    def __init__(self, name, func):
-        self.name = name
-        self.func = func
 
-    def execute(self, args):
-        return self.func(args)
-
-    def copy(self):
-        return BuiltInFunction(self.name, self.func)
-
-# INTERPRETER CLASS
+# КЛАСС ИНТЕРПРЕТАТОРА
 
 class Interpreter:
 
-    # visit node main functions
+    # ГЛАВНЫЕ ФУНКЦИИ
 
     def visit(self, node, context):
+        if node is None:
+            raise Exception("Received a None node, which is invalid")
+
         method_name = f'visit_{type(node).__name__}'
         method = getattr(self, method_name, self.no_visit_method)
         return method(node, context)
@@ -130,7 +123,7 @@ class Interpreter:
     def no_visit_method(self, node, context):
         raise Exception(f'No visit_{type(node).__name__} method defined')
 
-    # visit node child functions
+    # ДОЧЕРНИЕ ФУНКЦИИ
 
     def visit_NumberNode(self, node, context):
         return RTResult().success(
@@ -180,15 +173,19 @@ class Interpreter:
                 context
             ))
 
-        # Если функция встроенная, обрабатываем её
         if isinstance(func, BuiltInFunction):
             args = []
+
             for arg_node in node.arg_nodes:
                 arg_value = res.register(self.visit(arg_node, context))
                 if res.error: return res
                 args.append(arg_value)
 
-            return res.success(func.execute(args))
+            result = func.execute(args)
+            if result is not None:
+                return res.success(result)
+
+            return res.success(None)
 
         # Если это не встроенная функция, нужно обработать её как обычную функцию
         return res.failure(RTError(
@@ -233,14 +230,21 @@ class Interpreter:
         if res.error: return res
         right = res.register(self.visit(node.right_node, context))
         if res.error: return res
+
+        if not isinstance(left, Number):
+            return res.failure(RTError(
+                node.pos_start, node.pos_end,
+                f"First argument must be a number",
+                context
+            ))
     
-        if node.op_tok.type == T_PLUS:
+        if node.op_tok.type == TokenType.T_PLUS:
             result, error = left.added_to(right)
-        elif node.op_tok.type == T_MINUS:
+        elif node.op_tok.type == TokenType.T_MINUS:
             result, error = left.subbed_by(right)
-        elif node.op_tok.type == T_MULTIPLY:
+        elif node.op_tok.type == TokenType.T_MULTIPLY:
             result, error = left.multed_by(right)
-        elif node.op_tok.type == T_DIVIDE:
+        elif node.op_tok.type == TokenType.T_DIVIDE:
             result, error = left.dived_by(right)
     
         if error:
@@ -255,7 +259,7 @@ class Interpreter:
     
         error = None
     
-        if node.op_tok.type == T_MINUS:
+        if node.op_tok.type == TokenType.T_MINUS:
             number, error = number.multed_by(Number(-1))
     
         if error:
@@ -267,7 +271,7 @@ class Interpreter:
     	    String(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
     	)
 
-# CONTEXT CLASS
+# КЛАСС КОНТЕКСТА
 class Context:
 	def __init__(self, display_name, parent=None, parent_entry_pos=None):
 		self.display_name = display_name

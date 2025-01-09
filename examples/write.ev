@@ -1,0 +1,5 @@
+// The simple text output code.
+
+var text = "Hello, World!";
+
+print(text+5);

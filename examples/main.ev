@@ -1,0 +1,16 @@
+// Variables
+var name = "Dmitry"
+var age = 16
+
+// Function that compares number and minNumber.
+function compare(var number, var minNumber) {
+    if (number < minNumber) {
+        write("Go fuck yourself");
+    }
+    else {
+        write("Okay bro!");
+    }
+}
+
+// Exec function
+compare(age,minNumber)

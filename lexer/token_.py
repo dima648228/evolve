@@ -1,37 +1,46 @@
 import string
 
-# TOKEN TYPES [DATA TYPES]
-T_INT = 'T_INT'
-T_FLOAT = 'T_FLOAT'
-T_STRING = 'T_STRING'
-T_TRUE = 'T_TRUE'
-T_FALSE = 'T_FALSE'
+from enum import Enum
 
-# TOKEN TYPES [OPERATOR]
-T_PLUS = 'PLUS'
-T_MINUS = 'MINUS'
-T_MULTIPLY = 'MULTIPLY'
-T_DIVIDE = 'DIVIDE'
 
-# TOKEN TYPES [PARENS]
-T_LPAREN = 'LPAREN'
-T_RPAREN = 'RPAREN'
-T_COMMA = 'COMMA'
-T_EOF = 'EOF'
+class TokenType(Enum):
+    # Типы данных
+    T_INT = 'T_INT'
+    T_FLOAT = 'T_FLOAT'
+    T_STRING = 'T_STRING'
+    T_TRUE = 'T_TRUE'
+    T_FALSE = 'T_FALSE'
+    
+    # Операторы
+    T_PLUS = 'PLUS'
+    T_MINUS = 'MINUS'
+    T_MULTIPLY = 'MULTIPLY'
+    T_DIVIDE = 'DIVIDE'
 
-# GENERAL
-T_KEYWORD = 'KEYWORD'
-T_VAR = 'VAR'
-T_IDENTIFIER = 'IDENTIFIER'
-T_EQUAL = 'EQUAL'
+    # Скобки и запятые
+    T_LPAREN = 'LPAREN'
+    T_RPAREN = 'RPAREN'
+    T_COMMA = 'COMMA'
+    T_SEMICOLON = 'SEMICOLON'
+    T_EOF = 'EOF'
 
-# CONSTANS [DIGITS, ???]
+    # Общее
+    T_KEYWORD = 'KEYWORD'
+    T_IDENTIFIER = 'IDENTIFIER'
+    T_EQUAL = 'EQUAL'
+    
+    # Токены для функции
+    T_FUNC = 'FUNC'
+    T_RETURN = 'RETURN'
+
+
+# КОНСТАНТЫ [DIGITS, ???]
 
 DIGITS = '0123456789'
 LETTERS = string.ascii_letters
 LETTERS_DIGITS = LETTERS + DIGITS
 
-# THE TOKEN CLASS
+# КЛАСС ТОКЕНА
 
 class Token:
     def __init__(self, type, value=None, pos_start=None, pos_end=None):

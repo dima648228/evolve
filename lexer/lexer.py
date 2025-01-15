@@ -34,13 +34,17 @@ class Lexer:
             ',': TokenType.T_COMMA,
             '(': TokenType.T_LPAREN,
             ')': TokenType.T_RPAREN,
+            '{': TokenType.T_LBRACE,
+            '}': TokenType.T_RBRACE,
             ';': TokenType.T_SEMICOLON
         }
 
         keywords = {
             'true': TokenType.T_TRUE,
             'false': TokenType.T_FALSE,
-            'var': TokenType.T_KEYWORD
+
+            'var': TokenType.T_VAR,
+            'function': TokenType.T_FUNCTION
         }
 
         while self.currentChar is not None:
@@ -64,6 +68,7 @@ class Lexer:
                 return [], IllegalCharError(pos_start, self.pos, f"'{char}'")
 
         tokens.append(Token(TokenType.T_EOF, pos_start=self.pos))
+        #print(tokens)
         return tokens, None
 
     def peek(self):
@@ -95,6 +100,7 @@ class Lexer:
         self.advance()
         string = ''
         while self.currentChar != '"':
+            if self.currentChar == None: break
             string += self.currentChar
             self.advance()
         self.advance()

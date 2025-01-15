@@ -17,8 +17,8 @@ class Shell:
         if error: return None, error
 
         # СОЗДАНИЕ КОНТЕКСТА А ТАК ЖЕ ТАБИЛЦЫ СИМВОЛОВ ДЛЯ ИНТЕРПРЕТАТОРА
-        global_context = Context(display_name="global")
-        global_context.symbol_table = SymbolTable()
+        context = Context(display_name=fn)
+        context.symbol_table = SymbolTable()
         
         # СОЗДАНИЕ СИНТАКСИЧЕСКОГО ДЕРЕВА
         parser_ = Parser(tokens)
@@ -31,11 +31,14 @@ class Shell:
             return None, None
 
         # ИНИЦИАЛИЗАЦИЯ ИНТЕРПРЕТАТОРА И ВЫПОЛНЕНИЕ КОДА
-        interpreter = Interpreter()
-        importer = BuiltInFuncImporter(context=global_context)
+        interpreter = Interpreter(context)
+        importer = BuiltInFuncImporter(context=context)
 
         importer.import_built_in_functions()
-        result = interpreter.visit(ast.node,context=global_context)
+        result = interpreter.visit(ast.node,context=context)
+
+        if isinstance(result.error, RTError):
+            print(result.error.as_string())
 
         return ast, error
 
@@ -58,8 +61,6 @@ class Shell:
                 print(f"File '{filename}' not found.")
         else:
             result, error = self.runProgram("<stdin>",command)
-
-            if error: print(error.as_str())
         
         return False
             

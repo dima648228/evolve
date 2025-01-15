@@ -1,3 +1,6 @@
+import sys
+
+
 # КЛАСС ДЛЯ СОЗДАНИЯ ВСТРОЕННОЙ ФУНКЦИИ
 
 class BuiltInFunction:

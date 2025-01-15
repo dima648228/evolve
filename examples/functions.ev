@@ -1,5 +1,13 @@
-func displayText(text) {
-    write(text)
+
+
+function add(a) {
+    print(a+a);
 }
 
-displayText("My Own Function!")
+function sub(a) {
+    print(a-a);
+}
+
+add("asdasd");
+sub(7);
+add(99999);

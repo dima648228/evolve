@@ -86,17 +86,48 @@ class UnaryOpNode:
 
 class FuncCallNode:
     """Представляет ноду для вызова функции в AST."""
-    def __init__(self, var_name_tok, arg_nodes):
-        self.var_name_tok = var_name_tok
+    def __init__(self, func_name_tok, arg_nodes):
+        self.func_name_tok = func_name_tok
         self.arg_nodes = arg_nodes
-        self.pos_start = self.var_name_tok.pos_start
+        self.pos_start = self.func_name_tok.pos_start
         if len(self.arg_nodes) > 0:
             self.pos_end = self.arg_nodes[-1].pos_end
         else:
-            self.pos_end = self.var_name_tok.pos_end
+            self.pos_end = self.func_name_tok.pos_end
 
     def __repr__(self):
-        return f"{self.var_name_tok}({', '.join(map(str, self.arg_nodes))})"
+        return f"{self.func_name_tok}({', '.join(map(str, self.arg_nodes))})"
+
+class FuncDefNode:
+    """Представляет ноду для определения функции в AST."""
+    def __init__(self, func_name_tok, args_nodes, body_nodes):
+        self.func_name_tok = func_name_tok 
+        self.args_nodes = args_nodes 
+        self.body_nodes = body_nodes
+        self.pos_start = self.func_name_tok.pos_start
+        self.pos_end = self.body_nodes[-1].pos_end if self.body_nodes else self.func_name_tok.pos_end
+
+    def __repr__(self):
+        args_str = ', '.join(map(str, self.args_nodes))
+        return f"FuncDefNode({self.func_name_tok}, [{args_str}], {self.body_nodes})"
+
+class BlockNode:
+    def __init__(self, statements, pos_start=None, pos_end=None):
+        self.statements = statements  # Список инструкций (или узлов)
+        self.pos_start = pos_start    # Позиция начала блока
+        self.pos_end = pos_end        # Позиция конца блока
+
+    def __repr__(self):
+        return f"<BlockNode {len(self.statements)} statements>"
+
+class BlockDefNode:
+    def __init__(self, statements, pos_start, pos_end):
+        self.statements = statements  # Список инструкций (выражений), которые нужно выполнить
+        self.pos_start = pos_start    # Позиция начала блока в исходном коде
+        self.pos_end = pos_end        # Позиция конца блока в исходном коде
+
+    def __repr__(self):
+        return f"<BlockDefNode {len(self.statements)} statements>"
 
 class ListNode:
     """Представляет ноду для списка элементов в AST."""

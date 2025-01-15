@@ -68,24 +68,19 @@ class Parser:
         res = ParseResult()
         statements = []
 
+        # Парсим все выражения до конца файла
         while self.current_tok.type != TokenType.T_EOF:
             statement = res.register(self.statement())
             if res.error:
                 return res.failure(res.error)
-
             if statement:
                 statements.append(statement)
 
-        if len(statements) == 0:
-            return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected at least one statement"
-            ))
+        # Возвращаем список всех выражений в виде узла
+        return res.success(ListNode(statements)) if statements else res.failure(
+            InvalidSyntaxError(self.current_tok.pos_start, self.current_tok.pos_end, "Expected at least one statement")
+        )
 
-        return res.success(ListNode(statements))
-
-
-    # Вспомогательная функция для проверки токена
     def check_token(self, expected_type, error_msg):
         if self.current_tok.type != expected_type:
             return ParseResult().failure(InvalidSyntaxError(
@@ -93,179 +88,175 @@ class Parser:
         self.advance()
         return ParseResult().success(self.current_tok)
 
-    """ 
-        Обработчик токенов. Он проверяет к какому типу относиться токен. Если токен это ключевое слово, то
-        он будет будет обрабатывать это как операцию присвоения либо переопределения. В противном случае
-        это будет обрабатываться как выражение. 
-    """
     def statement(self):
         res = ParseResult()
         tok = self.current_tok
 
-        # Обработка объявления переменной (var a = ...)
-        if tok.type == TokenType.T_KEYWORD and tok.value == "var":
-            res.register(self.advance())  # Пропускаем 'var'
-
-            if self.current_tok.type != TokenType.T_IDENTIFIER:
-                return res.failure(InvalidSyntaxError(
-                    self.current_tok.pos_start, self.current_tok.pos_end,
-                    "Expected variable name after 'var'"
-                ))
-
-            var_name = self.current_tok
-            if var_name.value in self.symbol_table:
-                return res.failure(InvalidSyntaxError(
-                    self.current_tok.pos_start, self.current_tok.pos_end,
-                    f"The variable {var_name.value} is already declared!"
-                ))
-
-            res.register(self.advance())  # Пропускаем идентификатор
-
-            if self.current_tok.type == TokenType.T_EQUAL:
-                res.register(self.advance())  # Пропускаем '='
-                expr = res.register(self.expression())  # Считываем выражение
-                if res.error: return res
-
-                if self.current_tok.type != TokenType.T_SEMICOLON:
-                    return res.failure(InvalidSyntaxError(
-                        self.current_tok.pos_start, self.current_tok.pos_end,
-                        "Expected ';' after variable declaration"
-                    ))
-                res.register(self.advance())  # Пропускаем ';'
-
-                # Добавляем переменную в таблицу символов
-                self.symbol_table[var_name.value] = var_name
-                return res.success(VariableAssignNode(var_name, expr))
-
-            return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected '=' in variable declaration"
-            ))
-
-        # Обработка присваивания существующей переменной (a = ...)
+        # Обрабатываем ключевое слово var
+        if tok.type == TokenType.T_VAR:
+            return self.handle_var_declaration(res)
+        # Обрабатываем ключевое слово function
+        elif tok.type == TokenType.T_FUNCTION:
+            return self.handle_function_declaration(res)
+        # Обрабатываем идентификаторы
         elif tok.type == TokenType.T_IDENTIFIER:
-            var_name = tok
-            res.register(self.advance()) 
-
-            if self.current_tok.type == TokenType.T_EQUAL:
-                res.register(self.advance())
-                expr = res.register(self.expression())
-                if res.error: return res
-
-                if self.current_tok.type != TokenType.T_SEMICOLON:
-                    return res.failure(InvalidSyntaxError(
-                        self.current_tok.pos_start, self.current_tok.pos_end,
-                        "Expected ';' after assignment"
-                    ))
-                res.register(self.advance())  # Пропускаем ';'
-
-                # Проверяем, существует ли переменная в таблице символов
-                if var_name.value not in self.symbol_table:
-                    return res.failure(InvalidSyntaxError(
-                        var_name.pos_start, var_name.pos_end,
-                        f"Variable '{var_name.value}' is not declared"
-                    ))
-                
-                return res.success(VariableAssignNode(var_name, expr))
-            elif self.current_tok.type == TokenType.T_LPAREN:
-                return self.function_call(var_name)
-
-            return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                f"Unexpected token {self.current_tok.type} after identifier"
-            ))
+            return self.handle_identifier(res, tok)
         else:
             expr = res.register(self.expression())
-            if res.error: return res
-            return res.success(expr)
+            return res.success(expr) if not res.error else res
+
+    def handle_var_declaration(self, res):
+        res.register(self.advance())
+        if self.current_tok.type != TokenType.T_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected variable name after 'var'"
+            ))
+        var_name = self.current_tok
+        if var_name.value in self.symbol_table:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, f"Variable '{var_name.value}' already declared"
+            ))
+        res.register(self.advance())
+        if self.current_tok.type == TokenType.T_EQUAL:
+            return self.parse_assignment(res, var_name)
+        return res.failure(InvalidSyntaxError(
+            self.current_tok.pos_start, self.current_tok.pos_end, "Expected '=' in variable declaration"
+        ))
+
+    def handle_function_declaration(self, res):
+        res.register(self.advance())
+
+        if self.current_tok.type != TokenType.T_IDENTIFIER:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected function name after 'function'"
+            ))
+        func_name = self.current_tok
+
+        if func_name.value in self.symbol_table:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, f"Function '{func_name.value}' already declared"
+            ))
+
+        res.register(self.advance())
+
+        if self.current_tok.type != TokenType.T_LPAREN:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '(' after function name"
+            ))
+        res.register(self.advance())
+
+        arg_nodes = []
+        if self.current_tok.type == TokenType.T_RPAREN:
+            res.register(self.advance())
+        else:
+            arg_nodes.append(res.register(self.check_token(TokenType.T_IDENTIFIER, "Expected argument name")))
+
+            # Обрабатываем остальные аргументы, если они есть
+            while self.current_tok.type == TokenType.T_COMMA and self.current_tok.type != TokenType.T_RPAREN:
+                res.register(self.advance())
+                arg_nodes.append(res.register(self.check_token(TokenType.T_IDENTIFIER, "Expected argument name")))
+            res.register(self.advance())
+
+        # Проверяем, что после закрывающей скобки идёт открывающая фигурная скобка '{'
+        if self.current_tok.type != TokenType.T_LBRACE:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '{' at the start of function body"
+            ))
+
+        # Пропускаем открывающую фигурную скобку '{'
+        res.register(self.advance())
+
+        body = []
+        # Обрабатываем тело функции
+        while self.current_tok.type != TokenType.T_RBRACE and self.current_tok.type != TokenType.T_EOF:
+            body.append(res.register(self.statement()))
+            if res.error:
+                return res
+
+        # Ожидаем закрывающую фигурную скобку '}'
+        if self.current_tok.type != TokenType.T_RBRACE:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '}' at the end of function body"
+            ))
+
+        # Пропускаем закрывающую фигурную скобку '}'
+        res.register(self.advance())
+
+        # Сохраняем функцию в таблице символов
+        self.symbol_table[func_name.value] = func_name
+        
+        return res.success(FuncDefNode(func_name, arg_nodes, body))
+
+
+
+    def handle_identifier(self, res, var_name):
+        res.register(self.advance())
+        if self.current_tok.type == TokenType.T_EQUAL:
+            return self.parse_assignment(res, var_name)
+        elif self.current_tok.type == TokenType.T_LPAREN:
+            return self.function_call(var_name)
+        return res.failure(InvalidSyntaxError(
+            self.current_tok.pos_start, self.current_tok.pos_end, f"Unexpected token {self.current_tok.type}"
+        ))
+
+    def parse_assignment(self, res, var_name):
+        res.register(self.advance())
+        expr = res.register(self.expression())
+        if res.error:
+            return res
+        if self.current_tok.type != TokenType.T_SEMICOLON:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after assignment"
+            ))
+        res.register(self.advance())
+        self.symbol_table[var_name.value] = var_name
+        return res.success(VariableAssignNode(var_name, expr))
 
     def factor(self):
         res = ParseResult()
         tok = self.current_tok
 
-        # Обработка унарных операторов
         if tok.type in (TokenType.T_PLUS, TokenType.T_MINUS):
             res.register(self.advance())
-            factor = res.register(self.factor())
-            if res.error: return res
-            return res.success(UnaryOpNode(tok, factor))
-
+            return res.success(UnaryOpNode(tok, res.register(self.factor())))
         elif tok.type in (TokenType.T_INT, TokenType.T_FLOAT, TokenType.T_STRING, TokenType.T_TRUE, TokenType.T_FALSE):
             res.register(self.advance())
             return res.success(NumberNode(tok) if tok.type in (TokenType.T_INT, TokenType.T_FLOAT) else StringNode(tok) if tok.type == TokenType.T_STRING else BooleanNode(tok))
-
         elif tok.type == TokenType.T_IDENTIFIER:
-            var_name = tok
-            res.register(self.advance())
-
-            if self.current_tok.type == TokenType.T_LPAREN:
-                return self.function_call(var_name)
-
-            return res.success(VariableAccessNode(var_name))
-
-
+            return res.success(VariableAccessNode(res.register(self.advance())))
         elif tok.type == TokenType.T_LPAREN:
             res.register(self.advance())
-            expression = res.register(self.expression())
-            if res.error: return res
-    
-            if self.current_tok.type != TokenType.T_RPAREN:
+            expr = res.register(self.expression())
+            if res.error or self.current_tok.type != TokenType.T_RPAREN:
                 return res.failure(InvalidSyntaxError(
-                    self.current_tok.pos_start, self.current_tok.pos_end,
-                    "Expected ')' after expression"
+                    self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
                 ))
-
             res.register(self.advance())
-            return res.success(expression)
-        elif tok.type == TokenType.T_SEMICOLON:
-            res.register(self.advance())
-            return res.success(None)
-        
+            return res.success(expr)
         return res.failure(InvalidSyntaxError(
-            tok.pos_start, tok.pos_end,
-            "Expected int, float, identifier, '+', '-' or '('"
+            tok.pos_start, tok.pos_end, "Expected int, float, identifier, '+', '-', or '('"
         ))
 
     def function_call(self, func_name_tok):
         res = ParseResult()
         arg_nodes = []
-
-        #print(f"Attempting to parse function call: {func_name_tok.value}")
-
-        # Пропускаем открывающую скобку '('
         res.register(self.advance())
-
         if self.current_tok.type != TokenType.T_RPAREN:
-            # Считывание первого аргумента
             arg_nodes.append(res.register(self.expression()))
             while self.current_tok.type == TokenType.T_COMMA:
                 res.register(self.advance())
                 arg_nodes.append(res.register(self.expression()))
-                if res.error: return res
-
-        # Проверка на наличие закрывающей скобки ')'
         if self.current_tok.type != TokenType.T_RPAREN:
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected ')' after function arguments"
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
             ))
-
-        res.register(self.advance())  # Пропускаем ')'
-
-        # После закрывающей скобки должна быть точка с запятой
+        res.register(self.advance())
         if self.current_tok.type != TokenType.T_SEMICOLON:
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected ';' after function call"
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after function call"
             ))
-
-        res.register(self.advance())  # Пропускаем ';'
-
-        #print(f"Function call successfully parsed: {func_name_tok.value}")
-        #print(func_name_tok)
+        res.register(self.advance())
         return res.success(FuncCallNode(func_name_tok, arg_nodes))
-
-
 
     def term(self):
         return self.bin_op(self.factor, (TokenType.T_MULTIPLY, TokenType.T_DIVIDE))
@@ -276,13 +267,8 @@ class Parser:
     def bin_op(self, func, ops):
         res = ParseResult()
         left = res.register(func())
-        if res.error: return res
-
-        while self.current_tok.type in ops:
+        while not res.error and self.current_tok.type in ops:
             op_tok = self.current_tok
             res.register(self.advance())
-            right = res.register(func())
-            if res.error: return res
-            left = BinOpNode(left, op_tok, right)
-
+            left = BinOpNode(left, op_tok, res.register(func()))
         return res.success(left)

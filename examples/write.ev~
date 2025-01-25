@@ -2,4 +2,6 @@
 
 var text = "Hello, World!";
 
-print(text); // Printing text
+print(3/2); // Printing text
+
+print(3**3)

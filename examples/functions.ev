@@ -1,13 +1,9 @@
 
-
-function add(a) {
-    print(a+a);
+function hello() {
+    print("Hello, World!");
 }
 
-function sub(a) {
-    print(a-a);
+function bye() {
+    print("Bye, World!");
+    print(5*9466394739451197117115892378904789023747893278947890239423423);
 }
-
-add("asdasd");
-sub(7);
-add(99999);

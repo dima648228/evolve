@@ -66,7 +66,7 @@ class String(Value):
         return String(self.value).set_pos(self.pos_start, self.pos_end).set_context(self.context)
 
     def __repr__(self):
-        return f'"{self.value}"'
+        return f'{self.value}'
 
 class Boolean(Value):
     def __init__(self, value):
@@ -170,7 +170,7 @@ class Interpreter:
         var_name = node.var_name_tok.value
         value = context.symbol_table.get(var_name)
         
-        if not value: value = self.global_context.symbol_table.get(var_name)
+        #if not value: value = self.global_context.symbol_table.get(var_name)
 
         if var_name in ['var', 'if', 'else', 'while']:
             return res.failure(RTError(
@@ -193,7 +193,7 @@ class Interpreter:
         res = RTResult()
         
         func_name = node.func_name_tok.value
-        args_nodes = node.args_nodes
+        args_nodes = [arg_tok.value for arg_tok in node.args_nodes]
         body = node.body_nodes
         
         func = Function(func_name, args_nodes, body, context)
@@ -214,7 +214,7 @@ class Interpreter:
         func = context.symbol_table.get(func_name)
 
         if not func:
-            func = self.global_context.symbol_table.get(func_name)
+            #func = self.global_context.symbol_table.get(func_name)
 
             if not func:
                 return res.failure(RTError(
@@ -239,12 +239,24 @@ class Interpreter:
         elif isinstance(func, Function):
             new_context = Context(func_name, context)
             new_context.symbol_table = SymbolTable()
+            new_context.symbol_table.parent = context.symbol_table
+
+            if len(node.arg_nodes) != len(func.arg_names):
+                return res.failure(RTError(
+                    node.pos_start, node.pos_end,
+                    f"'{func_name}' expected {len(func.arg_names)} arguments, "
+                    f"but got {len(node.arg_nodes)}",
+                    context
+                ))
 
             for i, arg_node in enumerate(node.arg_nodes):
-                arg_value = res.register(self.visit(arg_node, context))
-                if res.error: return res
-                new_context.symbol_table.set(func.arg_names[i].value, arg_value)
+                print("Function name:", func.name)
+                print("Argument names:", func.arg_names)
+                print("Passed arguments:", [self.visit(arg_node, new_context).value for arg_node in node.arg_nodes])
 
+                arg_value = res.register(self.visit(arg_node, new_context))
+                if res.error: return res
+                new_context.symbol_table.set(func.arg_names[i], arg_value)
             return self.visit_BlockNode(func.body_nodes, new_context)
 
         return res.failure(RTError(

@@ -1,29 +1,74 @@
+"""
+Модуль лексера для анализа исходного кода.
+"""
+
 import re
-from lexer.token_ import *
-from debug.error_ import *
+from lexer.token_ import *  # Модуль с определением токенов.
+from debug.error_ import *  # Модуль для обработки ошибок.
 
 
 class Lexer:
-    def __init__(self,fn, code) -> None:
+    """
+    Класс Lexer выполняет лексический анализ исходного кода.
+    Он преобразует текст программы в последовательность токенов для дальнейшей обработки.
+
+    Атрибуты:
+        fn (str): Имя файла исходного кода.
+        code (str): Содержимое исходного кода.
+        pos (Position): Текущая позиция в анализируемом коде.
+        currentChar (str): Текущий символ, на котором находится лексер.
+    """
+
+    def __init__(self, fn, code) -> None:
+        """
+        Инициализация объекта лексера.
+
+        Параметры:
+            fn (str): Имя файла исходного кода.
+            code (str): Содержимое исходного кода.
+        """
         self.fn = fn
         self.code = code
-        self.pos = Position(-1,0,-1,fn,code)
+        self.pos = Position(-1, 0, -1, fn, code)
         self.currentChar = None
 
         self.advance()
 
     def advance(self):
+        """
+        Продвигает текущую позицию на один символ вперед.
+        Если достигнут конец строки, устанавливает currentChar в None.
+        """
         self.pos.advance(self.currentChar)
         self.currentChar = self.code[self.pos.idx] if self.pos.idx < len(self.code) else None
 
-    def advance_n(self,n):
+    def advance_n(self, n):
+        """
+        Продвигает текущую позицию на n символов вперед.
+
+        Параметры:
+            n (int): Количество символов для продвижения.
+        """
         for _ in range(n):
             self.advance()
 
     def is_digital(self):
+        """
+        Проверяет, является ли текущий символ цифрой.
+
+        Возвращает:
+            bool: True, если символ цифра, иначе False.
+        """
         return self.currentChar in DIGITS
 
     def make_tokens(self):
+        """
+        Основной метод лексера, который преобразует исходный код в последовательность токенов.
+
+        Возвращает:
+            list[Token]: Список токенов.
+            Error: Объект ошибки, если токенизация завершилась ошибкой.
+        """
         tokens = []
         single_char_tokens = {
             '+': TokenType.T_PLUS,
@@ -42,45 +87,58 @@ class Lexer:
         keywords = {
             'true': TokenType.T_TRUE,
             'false': TokenType.T_FALSE,
-
             'var': TokenType.T_VAR,
             'function': TokenType.T_FUNCTION
         }
 
         while self.currentChar is not None:
-            if self.currentChar in ' \t\n':
+            if self.currentChar in ' \t\n':  # Пропуск пробелов и пустых символов.
                 self.advance()
-            elif self.currentChar == '/' and self.peek() == '/':
+            elif self.currentChar == '/' and self.peek() == '/':  # Пропуск однострочных комментариев.
                 self.skip_comment()
-            elif self.currentChar in DIGITS:
+            elif self.currentChar in DIGITS:  # Обработка чисел.
                 tokens.append(self.make_number())
-            elif self.currentChar == '"':
+            elif self.currentChar == '"':  # Обработка строк.
                 tokens.append(self.make_string())
-            elif self.currentChar in LETTERS:
+            elif self.currentChar in LETTERS:  # Обработка идентификаторов и ключевых слов.
                 tokens.append(self.make_identifier_or_keyword(keywords))
-            elif self.currentChar in single_char_tokens:
+            elif self.currentChar in single_char_tokens:  # Обработка одиночных символов-токенов.
                 tokens.append(Token(single_char_tokens[self.currentChar], pos_start=self.pos))
                 self.advance()
-            else:
+            else:  # Обработка некорректных символов.
                 pos_start = self.pos.copy()
                 char = self.currentChar
                 self.advance()
                 return [], IllegalCharError(pos_start, self.pos, f"'{char}'")
 
-        tokens.append(Token(TokenType.T_EOF, pos_start=self.pos))
-        #print(tokens)
+        tokens.append(Token(TokenType.T_EOF, pos_start=self.pos))  # Добавление токена конца файла.
         return tokens, None
 
     def peek(self):
+        """
+        Возвращает следующий символ, не продвигая текущую позицию.
+
+        Возвращает:
+            str: Следующий символ или None, если достигнут конец строки.
+        """
         peek_pos = self.pos.idx + 1
         return self.code[peek_pos] if peek_pos < len(self.code) else None
 
     def skip_comment(self):
+        """
+        Пропускает символы однострочного комментария.
+        """
         while self.currentChar is not None and self.currentChar != "\n":
             self.advance()
         self.advance()
 
     def make_number(self):
+        """
+        Создает токен числа (целого или вещественного).
+
+        Возвращает:
+            Token: Токен числа.
+        """
         num_str = ''
         dot_count = 0
         pos_start = self.pos.copy()
@@ -97,16 +155,32 @@ class Lexer:
         return Token(token_type, float(num_str) if dot_count == 1 else int(num_str), pos_start, self.pos)
 
     def make_string(self):
+        """
+        Создает токен строки.
+
+        Возвращает:
+            Token: Токен строки.
+        """
         self.advance()
         string = ''
         while self.currentChar != '"':
-            if self.currentChar == None: break
+            if self.currentChar is None: 
+                break
             string += self.currentChar
             self.advance()
         self.advance()
         return Token(TokenType.T_STRING, string, self.pos.copy(), self.pos)
 
     def make_identifier_or_keyword(self, keywords):
+        """
+        Создает токен идентификатора или ключевого слова.
+
+        Параметры:
+            keywords (dict): Словарь ключевых слов.
+
+        Возвращает:
+            Token: Токен идентификатора или ключевого слова.
+        """
         id_str = ''
         pos_start = self.pos.copy()
 

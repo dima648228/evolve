@@ -1,0 +1,15 @@
+var a = 0;
+var b = 4;
+
+var maxA = 5;
+
+function compare() {
+    print("a = ", a);
+    a = a + 1;
+
+    if (a != 5) {
+        compare();
+    }
+}
+
+compare();

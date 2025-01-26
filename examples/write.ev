@@ -1,5 +1,5 @@
 // The simple text output code.
 
-var text = "Hello, World!";
+var texttt = "Hello, World!";
 
-print(text); // Printing text
+print(texttt); // Printing text

@@ -1,0 +1,25 @@
+include math;
+
+var isRunning = false;
+
+function startGame() {
+    isRunning = true;
+    randNumber = math.random(0,100)
+
+    while (isRunning == true) {
+        var number = scan();
+
+        if (number < randNumber) {
+            print("Your number is too low!");
+        }
+        elseif (number > randNumber) {
+            print("Your number is too big!");
+        }
+        else {
+            print("You won!");
+            break;
+        }
+    }
+}
+
+startGame();

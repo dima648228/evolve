@@ -1,4 +1,4 @@
-from lexer.lexer import *
+from parser.lexer import *
 from shell import *
 
 def main():

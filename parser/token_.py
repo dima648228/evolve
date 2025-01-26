@@ -27,7 +27,7 @@ class TokenType(Enum):
 
     # Операторы сравнения
     T_EQ = 'EQ'              # Равенство
-    T_NE = '!='              # Неравенство
+    T_NE = 'NEQ'             # Неравенство
     T_LT = 'LT'              # Меньше
     T_GT = 'GT'              # Больше
     T_LTE = 'LTE'            # Меньше или равно
@@ -42,17 +42,20 @@ class TokenType(Enum):
     T_RBRACKET = 'RBRACKET'  # Закрывающая квадратная скобка
     T_COMMA = 'COMMA'        # Запятая
     T_DOT = 'DOT'            # Точка
-    T_SEMICOLON = 'SEMICOLON' # Точка с запятой
+    T_SEMICOLON = 'SEMICOLON'# Точка с запятой
     T_COLON = 'COLON'        # Двоеточие
     T_EOF = 'EOF'            # Конец файла
 
     # Общее
-    T_IDENTIFIER = 'IDENTIFIER'  # Идентификатор (переменные, функции и т.д.)
-    T_EQUAL = 'EQUAL'            # Оператор присваивания
+    T_IDENTIFIER = 'IDENTIFIER'    # Идентификатор (переменные, функции и т.д.)
+    T_EQUAL = 'EQUAL'              # Оператор присваивания
+    T_PLUS_ASSIGN = 'PLUS_ASSIGN'  # Оператор арифметического присваивания (суммирование)
+    T_MINUS_ASSIGN = 'MINUS_ASSIGN'# Оператор арифметического присваивания
 
     # Ключевые слова
     T_VAR = 'VAR'            # Объявление переменной
     T_IF = 'IF'              # Условный оператор if
+    T_ELSEIF = 'ELSEIF'      # Условный оператор elseif
     T_ELSE = 'ELSE'          # Условный оператор else
     T_WHILE = 'WHILE'        # Цикл while
     T_FOR = 'FOR'            # Цикл for

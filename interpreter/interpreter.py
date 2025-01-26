@@ -1,6 +1,7 @@
-from lexer.token_ import *
+from parser.token_ import *
 from debug.error_ import *
 from interpreter.builtin_funcs import BuiltInFunction
+from parser.nodes import *
 
 class Value:
     def __init__(self, value):
@@ -46,6 +47,24 @@ class Number(Value):
                 other.pos_start, other.pos_end, 'Division by zero', self.context
             )
         return self._binary_op(other, lambda a, b: a / b, 'division')
+
+    def greater_than(self, other):
+        return self._binary_op(other, lambda a, b: a > b, 'comparsion_gt')
+    
+    def less_than(self, other):
+        return self._binary_op(other, lambda a, b: a < b, 'comparsion_lt')
+    
+    def greater_or_equal(self, other):
+        return self._binary_op(other, lambda a, b: a >= b, 'comparsion_gte')
+    
+    def less_or_equal(self, other):
+        return self._binary_op(other, lambda a, b: a <= b, 'comparsion_lte')
+    
+    def equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a == b, 'comparsion_gt')
+    
+    def not_equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a != b, 'comparsion_gt')
 
     def _binary_op(self, other, op, op_name):
         if isinstance(other, Number):
@@ -185,7 +204,7 @@ class Interpreter:
                 f"'{var_name}' is not defined",
                 context
             ))
-        
+
         value = value.copy().set_pos(node.pos_start,node.pos_end)
         return res.success(value)
     
@@ -257,13 +276,41 @@ class Interpreter:
                 arg_value = res.register(self.visit(arg_node, new_context))
                 if res.error: return res
                 new_context.symbol_table.set(func.arg_names[i], arg_value)
-            return self.visit_BlockNode(func.body_nodes, new_context)
+            return self.visit_BlockNode(func.body_nodes, context)
 
         return res.failure(RTError(
             node.pos_start, node.pos_end,
             f"'{func_name}' is not callable",
             context
         ))
+    
+    def visit_IfNode(self, node, context):
+        
+        def is_true(value):
+            """Определяет, является ли значение истинным (включая строки, числа и булевы значения)."""
+            if isinstance(value, bool):
+                return value
+            if isinstance(value, str):
+                return value.lower() != "false"
+            if value in [0, "0", "false", "None"]:
+                return False
+            return True
+        
+        res = RTResult()
+
+        condition_result = None
+
+        if isinstance(node.condition, BinOpNode):
+            condition_result = self.visit_BinOpNode(node.condition, context)
+        elif node.condition.tok and node.condition.tok.value in ("true", "false"):
+            condition_result = node.condition.tok
+
+        if is_true(condition_result.value.value):
+            res.register(self.visit_BlockNode(node.body, context))
+        else:
+            pass
+
+        return res.success(None)
     
     def visit_BlockDefNode(self, node, context):
         res = RTResult()
@@ -305,7 +352,6 @@ class Interpreter:
 
         # Получаем текущее значение переменной, если оно существует
         existing_value = context.symbol_table.get(var_name)
-        if not existing_value: existing_value = self.global_context.symbol_table.get(var_name)
         
         if existing_value:
             # Если переменная существует, обновляем её значение
@@ -331,6 +377,21 @@ class Interpreter:
             result, error = left.multed_by(right)
         elif node.op_tok.type == TokenType.T_DIVIDE:
             result, error = left.dived_by(right)
+        elif node.op_tok.type == TokenType.T_GT:
+            result, error = left.greater_than(right)
+        elif node.op_tok.type == TokenType.T_LT:
+            result, error = left.less_than(right)
+        elif node.op_tok.type == TokenType.T_GTE:
+            result, error = left.greater_or_equal(right)
+        elif node.op_tok.type == TokenType.T_LTE:
+            result, error = left.less_or_equal(right)
+        elif node.op_tok.type == TokenType.T_EQ:
+            result, error = left.equal_to(right)
+        elif node.op_tok.type == TokenType.T_NE:
+            result, error = left.not_equal_to(right)
+
+        if result and node.op_tok.type in (TokenType.T_GT,TokenType.T_LT,TokenType.T_GTE,TokenType.T_LTE, TokenType.T_EQ, TokenType.T_NE):
+            result.value = str(result.value).lower()
     
         if error:
             return res.failure(error)

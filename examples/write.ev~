@@ -1,7 +1,0 @@
-// The simple text output code.
-
-var text = "Hello, World!";
-
-print(3/2); // Printing text
-
-print(3**3)

@@ -1,0 +1,57 @@
+include math;
+
+var isRunning = false;
+var level = 1;
+var score = 0;
+var maxLevel = 10;
+var maxQuestions = 5;
+
+function generateQuestion(level) {
+    var num1 = math.random(1, level * 10);
+    var num2 = math.random(1, level * 10);
+    var answer = num1 + num2;
+    return [num1, num2, answer];
+}
+
+function startGame() {
+    isRunning = true;
+    print("Welcome to the Math Challenge!");
+    print("Try to solve as many math problems as possible to level up!");
+
+    while (isRunning) {
+        print("Level: " + level);
+        print("Score: " + score);
+        var questionsAnswered = 0;
+
+        while (questionsAnswered < maxQuestions) {
+            var question = generateQuestion(level);
+            print("Solve: " + question[0] + " + " + question[1]);
+            var answer = scan();
+
+            if (answer == question[2]) {
+                print("Correct!");
+                score = score + 10;
+                questionsAnswered = questionsAnswered + 1;
+            } else {
+                print("Incorrect! The correct answer was: " + question[2]);
+                questionsAnswered = questionsAnswered + 1;
+            }
+        }
+
+        if (score >= level * 50) {
+            level = level + 1;
+            print("Congratulations! You've leveled up to level " + level + "!");
+            score = score - level * 10; // Deduct some points to make it harder.
+        }
+
+        if (level > maxLevel) {
+            print("You've completed all levels! Your final score is: " + score);
+            break;
+        }
+
+        print("Press any key to continue to the next level...");
+        scan();
+    }
+}
+
+startGame();

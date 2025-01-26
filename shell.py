@@ -1,5 +1,5 @@
 
-from lexer.lexer import *
+from parser.lexer import *
 from parser.parser_ import *
 from interpreter.interpreter import *
 from interpreter.builtin_funcs import *
@@ -36,6 +36,7 @@ class Shell:
 
         importer.import_built_in_functions()
         result = interpreter.visit(ast.node,context=context)
+
 
         if isinstance(result.error, RTError):
             print(result.error.as_string())

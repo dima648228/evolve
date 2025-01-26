@@ -2,8 +2,7 @@
 Модуль лексера для анализа исходного кода.
 """
 
-import re
-from lexer.token_ import *  # Модуль с определением токенов.
+from parser.token_ import *  # Модуль с определением токенов.
 from debug.error_ import *  # Модуль для обработки ошибок.
 
 
@@ -76,6 +75,8 @@ class Lexer:
             '*': TokenType.T_MULTIPLY,
             '/': TokenType.T_DIVIDE,
             '=': TokenType.T_EQUAL,
+            '>': TokenType.T_GT,
+            '<': TokenType.T_LT,
             ',': TokenType.T_COMMA,
             '(': TokenType.T_LPAREN,
             ')': TokenType.T_RPAREN,
@@ -84,11 +85,23 @@ class Lexer:
             ';': TokenType.T_SEMICOLON
         }
 
+        double_char_tokens = {
+            '==': TokenType.T_EQ,
+            '!=': TokenType.T_NE,
+            '>=': TokenType.T_GTE,
+            '<=': TokenType.T_LTE,
+            '+=': TokenType.T_PLUS_ASSIGN,
+            '-=': TokenType.T_MINUS_ASSIGN
+        }
+
         keywords = {
             'true': TokenType.T_TRUE,
             'false': TokenType.T_FALSE,
             'var': TokenType.T_VAR,
-            'function': TokenType.T_FUNCTION
+            'function': TokenType.T_FUNCTION,
+            'if': TokenType.T_IF,
+            'elseif': TokenType.T_ELSEIF,
+            'else': TokenType.T_ELSE
         }
 
         while self.currentChar is not None:
@@ -102,6 +115,9 @@ class Lexer:
                 tokens.append(self.make_string())
             elif self.currentChar in LETTERS:  # Обработка идентификаторов и ключевых слов.
                 tokens.append(self.make_identifier_or_keyword(keywords))
+            elif f"{self.currentChar}{self.peek()}" in double_char_tokens:
+                tokens.append(Token(double_char_tokens[f"{self.currentChar}{self.peek()}"], pos_start=self.pos))
+                self.advance_n(2)
             elif self.currentChar in single_char_tokens:  # Обработка одиночных символов-токенов.
                 tokens.append(Token(single_char_tokens[self.currentChar], pos_start=self.pos))
                 self.advance()
@@ -112,6 +128,7 @@ class Lexer:
                 return [], IllegalCharError(pos_start, self.pos, f"'{char}'")
 
         tokens.append(Token(TokenType.T_EOF, pos_start=self.pos))  # Добавление токена конца файла.
+        #print(tokens)
         return tokens, None
 
     def peek(self):

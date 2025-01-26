@@ -1,4 +1,13 @@
-from lexer.token_ import *
+# ОСНОВНОЙ КЛАСС ПАРСЕРА
+# 
+# Этот код определяет парсер, используемый для непосредственного создания абстрактного синтаксического дерева (AST) для языка программирования Evolve.
+#
+# КОПИРАЙТ © 2025 justdimonn
+# 
+# Лицензировано на условиях никаких лол. Вы не можете использовать, распространять 
+# или модифицировать этот код, за исключением случаев, предусмотренных лицензией.
+
+from parser.token_ import *
 from debug.error_ import *
 from parser.nodes import *
 from enum import Enum
@@ -69,7 +78,10 @@ class Parser:
         """
         self.tokens = tokens
         self.tok_idx = -1
-        self.symbol_table = {}  # Локальная таблица символов
+        self.symbol_table = {
+            "variables_stack": {},
+            "functions_stack": {}
+        }  # Локальная таблица символов
 
         self.advance()
 
@@ -128,6 +140,8 @@ class Parser:
             return self.handle_var_declaration(res)
         elif tok.type == TokenType.T_FUNCTION:
             return self.handle_function_declaration(res)
+        elif tok.type == TokenType.T_IF:
+            return self.handle_if_statement(res)
         elif tok.type == TokenType.T_IDENTIFIER:
             return self.handle_identifier(res, tok)
         else:
@@ -145,7 +159,8 @@ class Parser:
             ))
         var_name = self.current_tok
 
-        if var_name.value in self.symbol_table:
+        if var_name.value in self.symbol_table["variables_stack"]:
+            print(self.symbol_table)
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end, f"Variable '{var_name.value}' already declared"
             ))
@@ -169,7 +184,7 @@ class Parser:
             ))
         func_name = self.current_tok
 
-        if func_name.value in self.symbol_table:
+        if func_name.value in self.symbol_table["functions_stack"]:
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end, f"Function '{func_name.value}' already declared"
             ))
@@ -227,7 +242,7 @@ class Parser:
         res.register(self.advance())
 
         # Сохраняем функцию в таблице символов
-        self.symbol_table[func_name.value] = func_name
+        self.symbol_table["functions_stack"][func_name.value] = func_name
         
         return res.success(FuncDefNode(func_name, arg_nodes, body))
 
@@ -259,6 +274,7 @@ class Parser:
         """
         res.register(self.advance())
         expr = res.register(self.expression())
+
         if res.error:
             return res
         if self.current_tok.type != TokenType.T_SEMICOLON:
@@ -266,8 +282,58 @@ class Parser:
                 self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after assignment"
             ))
         res.register(self.advance())
-        self.symbol_table[var_name.value] = var_name
+        self.symbol_table["variables_stack"][var_name.value] = var_name
         return res.success(VariableAssignNode(var_name, expr))
+    
+    def handle_if_statement(self, res):
+        res.register(self.advance())
+        tok = self.current_tok
+
+        if tok.type != TokenType.T_LPAREN:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '(' after function name"
+            ))
+        
+        res.register(self.advance())
+        expr = res.register(self.expression())
+
+        if expr == None:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected atleast one statement"
+            ))
+
+        if self.current_tok.type != TokenType.T_RPAREN:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')' after statement"
+            ))
+        
+        res.register(self.advance())
+
+        if self.current_tok.type != TokenType.T_LBRACE:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '{' after statement"
+            ))
+        res.register(self.advance())
+
+        body = []
+
+        # Обрабатываем тело условия
+        while self.current_tok.type != TokenType.T_RBRACE and self.current_tok.type != TokenType.T_EOF:
+            body.append(res.register(self.statement()))
+            if res.error:
+                return res
+
+        # Ожидаем закрывающую фигурную скобку '}'
+        if self.current_tok.type != TokenType.T_RBRACE:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end, "Expected '}' at the end of if statement body"
+            ))
+
+        # Пропускаем закрывающую фигурную скобку '}'
+        res.register(self.advance())
+        
+        return res.success(IfNode(expr, body, None, None))
+
 
     def factor(self):
         """
@@ -285,7 +351,15 @@ class Parser:
                                else StringNode(tok) if tok.type == TokenType.T_STRING
                                else BooleanNode(tok))
         elif tok.type == TokenType.T_IDENTIFIER:
+            res.register(self.advance())
+
+            if tok.value not in self.symbol_table["variables_stack"]:
+                return res.failure(InvalidSyntaxError(
+                    tok.pos_start, tok.pos_end, f"Variable '{tok.value}' is not defined"
+                ))
+            #res.register(self.advance())
             return res.success(VariableAccessNode(tok))
+        
         elif tok.type == TokenType.T_LPAREN:
             res.register(self.advance())
             expr = res.register(self.expression())
@@ -317,23 +391,49 @@ class Parser:
                 res.register(self.advance())  # Пропускаем запятую
                 arg_nodes.append(res.register(self.expression()))
 
-        #res.register(self.advance())
-
-        if self.current_tok.type != TokenType.T_RPAREN:
+        if self.current_tok.type != TokenType.T_RPAREN and self.current_tok.type != TokenType.T_IDENTIFIER:
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
             ))
 
-        res.register(self.advance())  # Пропускаем ')'
+        #res.register(self.advance())  # Пропускаем ')'
 
         if self.current_tok.type != TokenType.T_SEMICOLON:
-            return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after function call"
-            ))
+            res.register(self.advance())
+            if self.current_tok.type != TokenType.T_SEMICOLON:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after function call"
+                ))
 
         res.register(self.advance())  # Пропускаем ';'
-
         return res.success(FuncCallNode(func_name_tok, arg_nodes))
+
+    def comparison(self):
+        """
+        Обрабатывает операции сравнения (>, <, >=, <=, ==, !=).
+        """
+        res = ParseResult()
+        left = res.register(self.term())
+
+        if res.error:
+            return res
+    
+        while self.current_tok.type in (
+            TokenType.T_GT,
+            TokenType.T_LT,
+            TokenType.T_GTE,
+            TokenType.T_LTE,
+            TokenType.T_EQ,
+            TokenType.T_NE,
+        ):
+            op_tok = self.current_tok
+            res.register(self.advance())
+            right = res.register(self.term())
+            if res.error:
+                return res
+            left = BinOpNode(left, op_tok, right)
+
+        return res.success(left)
 
     def term(self):
         """
@@ -345,16 +445,22 @@ class Parser:
         """
         Обрабатывает выражения с операциями сложения и вычитания.
         """
-        return self.bin_op(self.term, (TokenType.T_PLUS, TokenType.T_MINUS))
+        return self.bin_op(self.comparison, (TokenType.T_PLUS, TokenType.T_MINUS))
 
     def bin_op(self, func, ops):
         """
-        Обрабатывает бинарные операции.
+        Обрабатывает бинарные операции, такие как сложение, вычитание, умножение и деление.
         """
         res = ParseResult()
         left = res.register(func())
-        while not res.error and self.current_tok.type in ops:
+
+        while self.current_tok and self.current_tok.type in ops:
             op_tok = self.current_tok
             res.register(self.advance())
-            left = BinOpNode(left, op_tok, res.register(func()))
+            right = res.register(func())
+            if res.error:
+                return res
+            left = BinOpNode(left, op_tok, right)
+
         return res.success(left)
+

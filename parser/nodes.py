@@ -110,6 +110,26 @@ class FuncDefNode:
     def __repr__(self):
         args_str = ', '.join(map(str, self.args_nodes))
         return f"FuncDefNode({self.func_name_tok}, [{args_str}], {self.body_nodes})"
+    
+class IfNode:
+    """Представляет ноду для условного оператора."""
+    def __init__(self, condition, body, elif_cases=None, else_case=None):
+        self.condition = condition          # Условие (узел)
+        self.body = body                    # Тело if (узел или список узлов)
+        self.elif_cases = elif_cases or []  # Список elif [(условие, тело)]
+        self.else_case = else_case          # Тело else (если есть)
+
+        self.pos_start = self.condition.pos_start
+        self.pos_end = (
+            self.else_case.pos_end if self.else_case
+            else (self.elif_cases[-1][1].pos_end if self.elif_cases
+                  else self.condition.pos_end)
+        )
+
+    def __repr__(self):
+        elif_str = f", elif_cases={self.elif_cases}" if self.elif_cases else ""
+        else_str = f", else_case={self.else_case}" if self.else_case else ""
+        return f"IfNode(condition={self.condition}, body={self.body}{elif_str}{else_str})"
 
 class BlockNode:
     def __init__(self, statements, pos_start=None, pos_end=None):

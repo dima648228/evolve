@@ -2,6 +2,7 @@ from parser.token_ import *
 from debug.error_ import *
 from interpreter.builtin_funcs import BuiltInFunction
 from parser.nodes import *
+from parser.keywords import *
 
 class Value:
     def __init__(self, value):
@@ -25,6 +26,13 @@ class Value:
         return RTError(
             self.pos_start, other.pos_end,
             f'Illegal operation between {self} and {other}',
+            self.context
+        )
+    
+    def type_error(self,other, op):
+        return RTError(
+            self.pos_start, other.pos_end,
+            f'Type Error: {op} not supported between {self} and {other}',
             self.context
         )
 
@@ -81,6 +89,41 @@ class String(Value):
     def __init__(self, value):
         super().__init__(value)
 
+    def added_to(self, other):
+        return None, self.illegal_operation(other)
+
+    def subbed_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def multed_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def dived_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def greater_than(self, other):
+        return None, self.type_error(other, '>')
+    
+    def less_than(self, other):
+        return None, self.type_error(other, '<')
+    
+    def greater_or_equal(self, other):
+        return None, self.type_error(other, '>=')
+    
+    def less_or_equal(self, other):
+        return None, self.type_error(other, '<=')
+
+    def equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a == b, 'comparsion_gt')
+    
+    def not_equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a != b, 'comparsion_gt')
+    
+    def _binary_op(self, other, op, op_name):
+        if isinstance(other, String):
+            return String(op(self.value, other.value)).set_context(self.context), None
+        return None, self.illegal_operation(other)
+
     def copy(self):
         return String(self.value).set_pos(self.pos_start, self.pos_end).set_context(self.context)
 
@@ -90,6 +133,41 @@ class String(Value):
 class Boolean(Value):
     def __init__(self, value):
         super().__init__(value)
+
+    def added_to(self, other):
+        return None, self.illegal_operation(other)
+
+    def subbed_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def multed_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def dived_by(self, other):
+        return None, self.illegal_operation(other)
+
+    def greater_than(self, other):
+        return self._binary_op(other, lambda a, b: a > b, 'comparsion_gt')
+    
+    def less_than(self, other):
+        return self._binary_op(other, lambda a, b: a < b, 'comparsion_lt')
+    
+    def greater_or_equal(self, other):
+        return self._binary_op(other, lambda a, b: a >= b, 'comparsion_gte')
+    
+    def less_or_equal(self, other):
+        return self._binary_op(other, lambda a, b: a <= b, 'comparsion_lte')
+
+    def equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a == b, 'comparsion_gt')
+    
+    def not_equal_to(self, other):
+        return self._binary_op(other, lambda a, b: a != b, 'comparsion_gt')
+    
+    def _binary_op(self, other, op, op_name):
+        if isinstance(other, Boolean):
+            return Boolean(op(self.value, other.value)).set_context(self.context), None
+        return None, self.illegal_operation(other)
 
     def copy(self):
         return Boolean(self.value).set_pos(self.pos_start, self.pos_end).set_context(self.context)
@@ -191,7 +269,7 @@ class Interpreter:
         
         #if not value: value = self.global_context.symbol_table.get(var_name)
 
-        if var_name in ['var', 'if', 'else', 'while']:
+        if var_name in RESERVED_KEYWORDS:
             return res.failure(RTError(
                 node.pos_start, node.pos_end,
                 f"'{var_name}' is a reserved keyword and cannot be used as a variable name",
@@ -284,6 +362,14 @@ class Interpreter:
             context
         ))
     
+    def visit_ReturnNode(self,node,context):
+        res = RTResult()
+
+        return_value = res.register(self.visit(node.return_value, context))
+        if res.error: return res
+
+        return res.success(return_value)
+    
     def visit_IfNode(self, node, context):
         
         def is_true(value):
@@ -328,7 +414,7 @@ class Interpreter:
 
                         return res.success(last_result)
                     elif not isinstance(condition_result.value, str) and is_true(condition_result.value):
-                        res.register(self.visit_BlockNode(subConditionNode[1], context))
+                        last_result = res.register(self.visit_BlockNode(subConditionNode[1], context))
 
                         return res.success(last_result)
             if node.else_case != None:

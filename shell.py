@@ -60,6 +60,8 @@ class Shell:
                     print(error.as_str())
             except FileNotFoundError:
                 print(f"File '{filename}' not found.")
+            except Exception:
+                pass
         else:
             result, error = self.runProgram("<stdin>",command)
         

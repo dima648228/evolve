@@ -99,6 +99,7 @@ class Lexer:
             'false': TokenType.T_FALSE,
             'var': TokenType.T_VAR,
             'function': TokenType.T_FUNCTION,
+            'return': TokenType.T_RETURN,
             'if': TokenType.T_IF,
             'elseif': TokenType.T_ELSEIF,
             'else': TokenType.T_ELSE

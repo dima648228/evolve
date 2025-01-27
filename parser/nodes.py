@@ -110,7 +110,29 @@ class FuncDefNode:
     def __repr__(self):
         args_str = ', '.join(map(str, self.args_nodes))
         return f"FuncDefNode({self.func_name_tok}, [{args_str}], {self.body_nodes})"
-    
+
+class ReturnNode:
+    """
+    Представляет ноду для ключевого слова 'return' в AST.
+    """
+    def __init__(self, return_value):
+        """
+        Инициализация узла 'return'.
+        
+        :param return_value: Значение, возвращаемое оператором return. 
+                             Может быть None для пустого return.
+        """
+        self.return_value = return_value
+        self.pos_start = self.return_value.pos_start
+        self.pos_end = self.return_value.pos_end
+
+    def __repr__(self):
+        """
+        Возвращает строковое представление узла.
+        """
+        return f"ReturnNode({self.return_value})"
+
+
 class IfNode:
     """Представляет ноду для условного оператора."""
     def __init__(self, condition, body, elseif_cases=None, else_case=None):

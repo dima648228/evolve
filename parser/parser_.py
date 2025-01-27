@@ -144,6 +144,8 @@ class Parser:
             return self.handle_if_statement(res)
         elif tok.type == TokenType.T_IDENTIFIER:
             return self.handle_identifier(res, tok)
+        elif tok.type == TokenType.T_RETURN:
+            return self.handle_return_statement(res)
         else:
             expr = res.register(self.expression())
             return res.success(expr) if not res.error else res
@@ -245,6 +247,33 @@ class Parser:
         self.symbol_table["functions_stack"][func_name.value] = func_name
         
         return res.success(FuncDefNode(func_name, arg_nodes, body))
+    
+    def handle_return_statement(self, res):
+        """
+        Обрабатывает инструкцию return.
+        """
+        res.register(self.advance())
+
+        if self.current_tok.type == TokenType.T_SEMICOLON:
+            # Если после return сразу идет ';', возвращаем пустой узел
+            res.register(self.advance())  # Пропускаем ';'
+            return res.success(ReturnNode(None))
+
+        # Если выражение есть, парсим его
+        expr = res.register(self.expression())
+        if res.error:
+            return res  # Возвращаем ошибку, если выражение некорректное
+
+        # После выражения ожидаем ';'
+        if self.current_tok.type != TokenType.T_SEMICOLON:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                "Expected ';' after return statement"
+            ))
+
+        res.register(self.advance())  # Пропускаем ';'
+        return res.success(ReturnNode(expr))
+
 
     def handle_identifier(self, res, var_name):
         """
@@ -273,14 +302,26 @@ class Parser:
         Обрабатывает присваивание значения переменной.
         """
         res.register(self.advance())
+
         expr = res.register(self.expression())
 
         if res.error:
             return res
-        if self.current_tok.type != TokenType.T_SEMICOLON:
+        if self.current_tok.type != TokenType.T_SEMICOLON and self.current_tok.type != TokenType.T_LPAREN:
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after assignment"
             ))
+        elif self.current_tok.type == TokenType.T_LPAREN:
+            res.register(self.advance())
+            res.register(self.expression())
+
+            res.register(self.advance())
+
+            if self.current_tok.type != TokenType.T_SEMICOLON:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end, "Expected ';' after assignment"
+                ))
+
         res.register(self.advance())
         self.symbol_table["variables_stack"][var_name.value] = var_name
         return res.success(VariableAssignNode(var_name, expr))
@@ -434,9 +475,11 @@ class Parser:
             res.register(self.advance())
 
             if tok.value not in self.symbol_table["variables_stack"]:
-                return res.failure(InvalidSyntaxError(
-                    tok.pos_start, tok.pos_end, f"Variable '{tok.value}' is not defined"
-                ))
+                if tok.value not in self.symbol_table["functions_stack"]:
+                    return res.failure(InvalidSyntaxError(
+                        tok.pos_start, tok.pos_end, f"Variable '{tok.value}' is not defined"
+                    ))
+            
             #res.register(self.advance())
             return res.success(VariableAccessNode(tok))
         
@@ -452,7 +495,6 @@ class Parser:
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end, "Expected int, float, identifier, '+', '-', or '('"
         ))
-
     def function_call(self, func_name_tok):
         """
         Обрабатывает вызов функции.

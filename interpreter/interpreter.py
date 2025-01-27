@@ -306,9 +306,30 @@ class Interpreter:
             condition_result = node.condition.tok
 
         if is_true(condition_result.value.value):
-            res.register(self.visit_BlockNode(node.body, context))
+            last_result = res.register(self.visit_BlockNode(node.body, context))
+
+            return res.success(last_result)
         else:
-            pass
+            if len(node.elseif_cases) > 0:
+                for subConditionNode in node.elseif_cases:
+                    condition_result = None
+
+                    if isinstance(subConditionNode[0], BinOpNode):
+                        condition_result = self.visit_BinOpNode(subConditionNode[0], context)
+                    elif subConditionNode[0].tok and subConditionNode[0].tok.value in ("true", "false"):
+                        condition_result = subConditionNode[0].tok
+                    
+                    if isinstance(condition_result.value, str) and is_true(condition_result.value):
+                        last_result = res.register(self.visit_BlockNode(subConditionNode[1], context))
+
+                        return res.success(last_result)
+                    elif is_true(condition_result.value):
+                        res.register(self.visit_BlockNode(subConditionNode[1], context))
+
+                        return res.success(last_result)
+            if node.else_case != None:
+                res.register(self.visit_BlockNode(node.else_case[1], context))
+                        
 
         return res.success(None)
     

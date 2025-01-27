@@ -1,14 +1,31 @@
-var a = 0;
+var a = -5;
 var b = 4;
 
-var maxA = 5;
+var maxA = 6;
 
 function compare() {
     print("a = ", a);
     a = a + 1;
 
-    if (a != 5) {
-        compare();
+    //if (a > 0) {
+    //    if (a != maxA) {
+    //        print("a greater 0");
+    //        compare();
+    //    }
+    //}
+    //elseif (a < 1) {
+    //    print("a less than 0");
+    //    compare();
+    //}
+
+    if (a == 4) {
+        print(228);
+    }
+    elseif (true) {
+        print(229);
+    }
+    else {
+        print(240);
     }
 }
 

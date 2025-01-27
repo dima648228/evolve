@@ -331,8 +331,88 @@ class Parser:
 
         # Пропускаем закрывающую фигурную скобку '}'
         res.register(self.advance())
+
+        ifNode = IfNode(expr, body, None, None)
+
+        self.handle_elseif_else_statements(res, ifNode)
         
-        return res.success(IfNode(expr, body, None, None))
+        return res.success(ifNode)
+
+    def handle_elseif_else_statements(self, res, ifNode):
+        """
+        Рекурсивно обрабатывает 'elseif' и 'else' блоки, добавляя их к узлу ifNode.
+        """
+        while self.current_tok.type in {TokenType.T_ELSEIF, TokenType.T_ELSE}:
+            if self.current_tok.type == TokenType.T_ELSEIF:
+                # Обрабатываем 'elseif'
+                res.register(self.advance())
+
+                if self.current_tok.type != TokenType.T_LPAREN:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected '(' after 'elseif'"
+                    ))
+
+                res.register(self.advance())
+                condition = res.register(self.expression())
+
+                if condition is None:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected a condition in 'elseif'"
+                    ))
+
+                if self.current_tok.type != TokenType.T_RPAREN:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')' after 'elseif' condition"
+                    ))
+
+                res.register(self.advance())
+
+                if self.current_tok.type != TokenType.T_LBRACE:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected '{' after 'elseif' condition"
+                    ))
+
+                res.register(self.advance())
+                body = []
+
+                while self.current_tok.type != TokenType.T_RBRACE and self.current_tok.type != TokenType.T_EOF:
+                    body.append(res.register(self.statement()))
+                    if res.error:
+                        return res
+
+                if self.current_tok.type != TokenType.T_RBRACE:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected '}' to close 'elseif' block"
+                    ))
+
+                res.register(self.advance())
+                ifNode.elseif_cases.append((condition, body))
+
+            elif self.current_tok.type == TokenType.T_ELSE:
+                # Обрабатываем 'else'
+                res.register(self.advance())
+
+                if self.current_tok.type != TokenType.T_LBRACE:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected '{' after 'else'"
+                    ))
+
+                res.register(self.advance())
+                body = []
+
+                while self.current_tok.type != TokenType.T_RBRACE and self.current_tok.type != TokenType.T_EOF:
+                    body.append(res.register(self.statement()))
+                    if res.error:
+                        return res
+
+                if self.current_tok.type != TokenType.T_RBRACE:
+                    return res.failure(InvalidSyntaxError(
+                        self.current_tok.pos_start, self.current_tok.pos_end, "Expected '}' to close 'else' block"
+                    ))
+
+                res.register(self.advance())
+                ifNode.else_case = (condition, body)
+                break
 
 
     def factor(self):

@@ -113,21 +113,23 @@ class FuncDefNode:
     
 class IfNode:
     """Представляет ноду для условного оператора."""
-    def __init__(self, condition, body, elif_cases=None, else_case=None):
-        self.condition = condition          # Условие (узел)
-        self.body = body                    # Тело if (узел или список узлов)
-        self.elif_cases = elif_cases or []  # Список elif [(условие, тело)]
-        self.else_case = else_case          # Тело else (если есть)
+    def __init__(self, condition, body, elseif_cases=None, else_case=None):
+        self.condition = condition              # Условие (узел)
+        self.body = body                        # Тело if (узел или список узлов)
+        self.elseif_cases = elseif_cases or []  # Список elif [(условие, тело)]
+        self.else_case = else_case              # Тело else (если есть)
 
-        self.pos_start = self.condition.pos_start
+        if self.condition: self.pos_start = self.condition.pos_start
+        else: self.pos_start = self.body[0].pos_start or 0
+
         self.pos_end = (
             self.else_case.pos_end if self.else_case
-            else (self.elif_cases[-1][1].pos_end if self.elif_cases
-                  else self.condition.pos_end)
+            else (self.elseif_cases[-1][1].pos_end if self.elseif_cases
+                  else 0)
         )
 
     def __repr__(self):
-        elif_str = f", elif_cases={self.elif_cases}" if self.elif_cases else ""
+        elif_str = f", elseif_cases={self.elseif_cases}" if self.elseif_cases else ""
         else_str = f", else_case={self.else_case}" if self.else_case else ""
         return f"IfNode(condition={self.condition}, body={self.body}{elif_str}{else_str})"
 

@@ -453,7 +453,6 @@ class Parser:
             tok.pos_start, tok.pos_end, "Expected int, float, identifier, '+', '-', or '('"
         ))
 
-
     def function_call(self, func_name_tok):
         """
         Обрабатывает вызов функции.

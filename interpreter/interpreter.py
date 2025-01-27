@@ -305,7 +305,11 @@ class Interpreter:
         elif node.condition.tok and node.condition.tok.value in ("true", "false"):
             condition_result = node.condition.tok
 
-        if is_true(condition_result.value.value):
+        if isinstance(condition_result.value, str) and is_true(condition_result.value):
+            last_result = res.register(self.visit_BlockNode(node.body, context))
+
+            return res.success(last_result)
+        elif not isinstance(condition_result.value, str) and is_true(condition_result.value.value):
             last_result = res.register(self.visit_BlockNode(node.body, context))
 
             return res.success(last_result)
@@ -323,7 +327,7 @@ class Interpreter:
                         last_result = res.register(self.visit_BlockNode(subConditionNode[1], context))
 
                         return res.success(last_result)
-                    elif is_true(condition_result.value):
+                    elif not isinstance(condition_result.value, str) and is_true(condition_result.value):
                         res.register(self.visit_BlockNode(subConditionNode[1], context))
 
                         return res.success(last_result)

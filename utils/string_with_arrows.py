@@ -1,4 +1,5 @@
 # THIS CODE WAS WRITTEN BY CODEPULSE!!
+# THANK YOU CODEPULSE FOR SHARING THIS UTIL!!
 
 def string_with_arrows(text, pos_start, pos_end):
     result = ''

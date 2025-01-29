@@ -1,0 +1,8 @@
+var a = 10;
+
+function a() {
+    print("Hello!");
+}
+
+a = a + 10;
+print(a);

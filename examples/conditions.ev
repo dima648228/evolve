@@ -14,3 +14,9 @@ function factorial() {
 factorial();
 
 print(result);
+
+function b(k,z,l) {
+    print(k);
+}
+
+b(5,8,9);

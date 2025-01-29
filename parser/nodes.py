@@ -90,7 +90,7 @@ class FuncCallNode:
         self.func_name_tok = func_name_tok
         self.arg_nodes = arg_nodes
         self.pos_start = self.func_name_tok.pos_start
-        if len(self.arg_nodes) > 0:
+        if self.arg_nodes and self.arg_nodes[-1] and len(self.arg_nodes) > 0:
             self.pos_end = self.arg_nodes[-1].pos_end
         else:
             self.pos_end = self.func_name_tok.pos_end

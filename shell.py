@@ -37,7 +37,6 @@ class Shell:
         importer.import_built_in_functions()
         result = interpreter.visit(ast.node,context=context)
 
-
         if isinstance(result.error, RTError):
             print(result.error.as_string())
 

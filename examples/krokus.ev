@@ -1,8 +1,16 @@
-var a = 10;
 
 function a() {
     print("Hello!");
 }
 
-a = a + 10;
+var a = 30;
+
 print(a);
+
+a(); // sdfojisdf
+
+function b() {
+    print(50);
+}
+
+b();

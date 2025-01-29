@@ -117,12 +117,14 @@ class Parser:
         )
 
     def check_token(self, expected_type, error_message):
+        res = ParseResult()
+
         """
         Проверяет, соответствует ли текущий токен ожидаемому типу.
         Если нет, возвращает ошибку.
         """
         if self.current_tok.type != expected_type:
-            return self.failure(InvalidSyntaxError(
+            return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end, error_message
             ))
         token = self.current_tok
@@ -452,7 +454,7 @@ class Parser:
                     ))
 
                 res.register(self.advance())
-                ifNode.else_case = (condition, body)
+                ifNode.else_case = (None, body)
                 break
 
 

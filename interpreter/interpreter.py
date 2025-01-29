@@ -1,6 +1,7 @@
 from parser.token_ import *
 from debug.error_ import *
 from interpreter.builtin_funcs import BuiltInFunction
+from interpreter.prefixes import *
 from parser.nodes import *
 from parser.keywords import *
 
@@ -194,7 +195,7 @@ class Function:
             ))
 
         for name, value in zip(self.arg_names, args):
-            new_context.symbol_table.set(name, value)
+            new_context.symbol_table.set(P_FUNCTION+name, value)
 
         return self._execute_body(new_context)
 
@@ -265,7 +266,8 @@ class Interpreter:
     def visit_VariableAccessNode(self, node, context):
         res = RTResult()
         var_name = node.var_name_tok.value
-        value = context.symbol_table.get(var_name)
+        value = context.symbol_table.get(P_VARIABLE+var_name)
+        
         
         #if not value: value = self.global_context.symbol_table.get(var_name)
 
@@ -296,7 +298,7 @@ class Interpreter:
         func = Function(func_name, args_nodes, body, context)
         
         # Добавляем функцию в таблицу символов
-        context.symbol_table.set(func_name, func)
+        context.symbol_table.set(P_FUNCTION+func_name, func)
         
         return res.success(func)
 
@@ -308,7 +310,7 @@ class Interpreter:
         func_name = node.func_name_tok.value
 
         # Получаем саму функцию из таблицы символов
-        func = context.symbol_table.get(func_name)
+        func = context.symbol_table.get(P_FUNCTION+func_name)
 
         if not func:
             #func = self.global_context.symbol_table.get(func_name)
@@ -462,14 +464,14 @@ class Interpreter:
         if res.error: return res
 
         # Получаем текущее значение переменной, если оно существует
-        existing_value = context.symbol_table.get(var_name)
+        existing_value = context.symbol_table.get(P_VARIABLE+var_name)
         
         if existing_value:
             # Если переменная существует, обновляем её значение
-            context.symbol_table.set(var_name, value)
+            context.symbol_table.set(P_VARIABLE+var_name, value)
         else:
             # Если переменной нет в таблице, это фактически её создание
-            context.symbol_table.set(var_name, value)
+            context.symbol_table.set(P_VARIABLE+var_name, value)
         
         return res.success(value)
 

@@ -21,8 +21,8 @@ class BuiltInFuncImporter:
         self.context = context
 
     def import_built_in_functions(self):      
-        print_func = BuiltInFunction("print", self.function_print)
-        self.context.symbol_table.set("print", print_func)
+        print_func = BuiltInFunction("func_print", self.function_print)
+        self.context.symbol_table.set("func_print", print_func)
 
     """ Функции встроенные в интерпретатор """
 

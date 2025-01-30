@@ -488,7 +488,7 @@ class Parser:
         elif tok.type == TokenType.T_LPAREN:
             res.register(self.advance())
             expr = res.register(self.expression())
-            if res.error or self.current_tok.type != TokenType.T_RPAREN:
+            if res.error or self.current_tok.type != TokenType.T_RPAREN and self.current_tok.type:
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
                 ))
@@ -516,8 +516,8 @@ class Parser:
 
         if self.current_tok.type != TokenType.T_RPAREN and self.current_tok.type != TokenType.T_IDENTIFIER:
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
-            ))
+                    self.current_tok.pos_start, self.current_tok.pos_end, "Expected ')'"
+                ))
 
         #res.register(self.advance())  # Пропускаем ')'
 

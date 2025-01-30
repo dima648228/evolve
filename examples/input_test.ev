@@ -1,0 +1,3 @@
+var char = false;
+
+print(char);

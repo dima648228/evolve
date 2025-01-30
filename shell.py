@@ -59,6 +59,8 @@ class Shell:
                     print(error.as_str())
             except FileNotFoundError:
                 print(f"File '{filename}' not found.")
+            except RecursionError as e:
+                print(f"RecursionError: {e}")
             #except Exception as e:
             #    print(e)
         else:

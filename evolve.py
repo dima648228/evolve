@@ -13,8 +13,8 @@ def main():
             shell_.runProgram(filename, code)
         except FileNotFoundError:
             print(f"File '{filename}' not found.")
-        except Exception as e:
-            print(f"Error: {e}")
+        except RecursionError as e:
+            print(f"{e}")
     else:
         shell_ = Shell()
         shell_.run()

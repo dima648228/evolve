@@ -46,3 +46,65 @@ utils\__pycache__\string_with_arrows.cpython-310.pyc, it is a binary file.
 utils\__pycache__\string_with_arrows.cpython-312.pyc, it is a binary file.
 utils\string_with_arrows.py, code is 16, comment is 6, blank is 6.
 ===============================================================================
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2025-01-30 20:17:47
+count workspace : e:\Workspace\Python\Evolve v0.1
+total files : 43
+total code lines : 1417
+total comment lines : 180
+total blank lines : 497
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |            .py|           1254|            161|            450|     88|
+   |             .c|             33|             12|              9|    2.3|
+   |            .ev|            130|              7|             38|    9.2|
+   -------------------------------------------------------------------------
+__pycache__\error_.cpython-310.pyc, it is a binary file.
+__pycache__\interpreter.cpython-310.pyc, it is a binary file.
+__pycache__\lexer.cpython-310.pyc, it is a binary file.
+__pycache__\parser_.cpython-310.pyc, it is a binary file.
+__pycache__\shell.cpython-310.pyc, it is a binary file.
+__pycache__\shell.cpython-312.pyc, it is a binary file.
+__pycache__\string_with_arrows.cpython-310.pyc, it is a binary file.
+__pycache__\token_.cpython-310.pyc, it is a binary file.
+debug\__pycache__\error_.cpython-310.pyc, it is a binary file.
+debug\__pycache__\error_.cpython-312.pyc, it is a binary file.
+debug\error_.py, code is 55, comment is 0, blank is 16.
+evolve.py, code is 20, comment is 0, blank is 4.
+examples\conditions.ev, code is 16, comment is 0, blank is 6.
+examples\functions.ev, code is 11, comment is 0, blank is 3.
+examples\input_test.ev, code is 2, comment is 0, blank is 1.
+examples\krokus.ev, code is 21, comment is 1, blank is 9.
+examples\main.ev, code is 11, comment is 3, blank is 2.
+examples\number_game.ev, code is 20, comment is 0, blank is 5.
+examples\question_game.ev, code is 47, comment is 1, blank is 10.
+examples\write.ev, code is 2, comment is 2, blank is 2.
+interpreter\__pycache__\builtin_funcs.cpython-312.pyc, it is a binary file.
+interpreter\__pycache__\interpreter.cpython-310.pyc, it is a binary file.
+interpreter\__pycache__\interpreter.cpython-312.pyc, it is a binary file.
+interpreter\__pycache__\prefixes.cpython-312.pyc, it is a binary file.
+interpreter\builtin_funcs.py, code is 27, comment is 2, blank is 16.
+interpreter\builtins\builtins.c, code is 33, comment is 12, blank is 9.
+interpreter\interpreter.py, code is 402, comment is 13, blank is 141.
+interpreter\prefixes.py, code is 2, comment is 0, blank is 0.
+parser\__pycache__\keywords.cpython-312.pyc, it is a binary file.
+parser\__pycache__\lexer.cpython-312.pyc, it is a binary file.
+parser\__pycache__\nodes.cpython-312.pyc, it is a binary file.
+parser\__pycache__\parser_.cpython-310.pyc, it is a binary file.
+parser\__pycache__\parser_.cpython-312.pyc, it is a binary file.
+parser\__pycache__\token_.cpython-312.pyc, it is a binary file.
+parser\keywords.py, code is 8, comment is 0, blank is 3.
+parser\lexer.py, code is 117, comment is 11, blank is 38.
+parser\nodes.py, code is 119, comment is 21, blank is 45.
+parser\parser_.py, code is 371, comment is 46, blank is 135.
+parser\token_.py, code is 68, comment is 52, blank is 24.
+shell.py, code is 49, comment is 9, blank is 22.
+utils\__pycache__\string_with_arrows.cpython-310.pyc, it is a binary file.
+utils\__pycache__\string_with_arrows.cpython-312.pyc, it is a binary file.
+utils\string_with_arrows.py, code is 16, comment is 7, blank is 6.
+===============================================================================

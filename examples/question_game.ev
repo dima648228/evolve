@@ -41,7 +41,7 @@ function startGame() {
         if (score >= level * 50) {
             level = level + 1;
             print("Congratulations! You've leveled up to level " + level + "!");
-            score = score - level * 10; // Deduct some points to make it harder.
+            score = score - level * 10;
         }
 
         if (level > maxLevel) {

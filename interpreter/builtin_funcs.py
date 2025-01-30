@@ -24,6 +24,9 @@ class BuiltInFuncImporter:
         print_func = BuiltInFunction("func_print", self.function_print)
         self.context.symbol_table.set("func_print", print_func)
 
+        input_func = BuiltInFunction("func_input", self.function_input)
+        self.context.symbol_table.set("func_input", input_func)
+
     """ Функции встроенные в интерпретатор """
 
     def function_print(*args):
@@ -34,3 +37,9 @@ class BuiltInFuncImporter:
             res += str(output_args[i])
 
         print(res)
+
+    def function_input(*args):
+        input_args = args[1][0]
+        res = ""
+
+        return input(input_args)

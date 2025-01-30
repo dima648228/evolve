@@ -224,6 +224,313 @@
                     "filename": "utils\\string_with_arrows.py"
                 }
             ]
+        },
+        {
+            "version": "0.2.7",
+            "counttime": "2025-01-30 20:17:47",
+            "filesum": 43,
+            "codesum": 1417,
+            "commentsum": 180,
+            "blanksum": 497,
+            "statistics": {
+                ".py": {
+                    "code": 1254,
+                    "comment": 161,
+                    "blank": 450
+                },
+                ".c": {
+                    "code": 33,
+                    "comment": 12,
+                    "blank": 9
+                },
+                ".ev": {
+                    "code": 130,
+                    "comment": 7,
+                    "blank": 38
+                }
+            },
+            "filelist": [
+                {
+                    "filename": "__pycache__\\error_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\interpreter.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\lexer.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\parser_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\shell.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\shell.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\string_with_arrows.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__\\token_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "debug\\__pycache__\\error_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "debug\\__pycache__\\error_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 16,
+                    "code": 55,
+                    "comment": 0,
+                    "filename": "debug\\error_.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 20,
+                    "comment": 0,
+                    "filename": "evolve.py"
+                },
+                {
+                    "blank": 6,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "examples\\conditions.ev"
+                },
+                {
+                    "blank": 3,
+                    "code": 11,
+                    "comment": 0,
+                    "filename": "examples\\functions.ev"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "examples\\input_test.ev"
+                },
+                {
+                    "blank": 9,
+                    "code": 21,
+                    "comment": 1,
+                    "filename": "examples\\krokus.ev"
+                },
+                {
+                    "blank": 2,
+                    "code": 11,
+                    "comment": 3,
+                    "filename": "examples\\main.ev"
+                },
+                {
+                    "blank": 5,
+                    "code": 20,
+                    "comment": 0,
+                    "filename": "examples\\number_game.ev"
+                },
+                {
+                    "blank": 10,
+                    "code": 47,
+                    "comment": 1,
+                    "filename": "examples\\question_game.ev"
+                },
+                {
+                    "blank": 2,
+                    "code": 2,
+                    "comment": 2,
+                    "filename": "examples\\write.ev"
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\builtin_funcs.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\interpreter.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\interpreter.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "interpreter\\__pycache__\\prefixes.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 16,
+                    "code": 27,
+                    "comment": 2,
+                    "filename": "interpreter\\builtin_funcs.py"
+                },
+                {
+                    "blank": 9,
+                    "code": 33,
+                    "comment": 12,
+                    "filename": "interpreter\\builtins\\builtins.c"
+                },
+                {
+                    "blank": 141,
+                    "code": 402,
+                    "comment": 13,
+                    "filename": "interpreter\\interpreter.py"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "interpreter\\prefixes.py"
+                },
+                {
+                    "filename": "parser\\__pycache__\\keywords.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\lexer.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\nodes.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\parser_.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\parser_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "parser\\__pycache__\\token_.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 3,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": "parser\\keywords.py"
+                },
+                {
+                    "blank": 38,
+                    "code": 117,
+                    "comment": 11,
+                    "filename": "parser\\lexer.py"
+                },
+                {
+                    "blank": 45,
+                    "code": 119,
+                    "comment": 21,
+                    "filename": "parser\\nodes.py"
+                },
+                {
+                    "blank": 135,
+                    "code": 371,
+                    "comment": 46,
+                    "filename": "parser\\parser_.py"
+                },
+                {
+                    "blank": 24,
+                    "code": 68,
+                    "comment": 52,
+                    "filename": "parser\\token_.py"
+                },
+                {
+                    "blank": 22,
+                    "code": 49,
+                    "comment": 9,
+                    "filename": "shell.py"
+                },
+                {
+                    "filename": "utils\\__pycache__\\string_with_arrows.cpython-310.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "utils\\__pycache__\\string_with_arrows.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 6,
+                    "code": 16,
+                    "comment": 7,
+                    "filename": "utils\\string_with_arrows.py"
+                }
+            ]
         }
     ]
 }

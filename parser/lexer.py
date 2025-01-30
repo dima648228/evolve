@@ -112,7 +112,7 @@ class Lexer:
                 self.skip_comment()
             elif self.currentChar in DIGITS:  # Обработка чисел.
                 tokens.append(self.make_number())
-            elif self.currentChar == '"':  # Обработка строк.
+            elif self.currentChar == '"' or self.currentChar == "'":  # Обработка строк.
                 tokens.append(self.make_string())
             elif self.currentChar in LETTERS:  # Обработка идентификаторов и ключевых слов.
                 tokens.append(self.make_identifier_or_keyword(keywords))
@@ -179,9 +179,16 @@ class Lexer:
         Возвращает:
             Token: Токен строки.
         """
+
+        self.quotesType = self.currentChar
         self.advance()
+
         string = ''
-        while self.currentChar != '"':
+
+        if self.currentChar == self.quotesType:
+            return Token(TokenType.T_STRING, string, self.pos.copy(), self.pos)
+
+        while self.currentChar != self.quotesType:
             if self.currentChar is None: 
                 break
             string += self.currentChar

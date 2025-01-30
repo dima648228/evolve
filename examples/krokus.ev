@@ -1,13 +1,27 @@
+var c = 0;
+
 
 function a() {
+    function a() {
+        c = c + 1;
+        if (c < 11) {
+            print("kakashka");
+
+            a();
+        }
+    }
+    a();
+
     print("Hello!");
 }
 
+a(); // sdfojisdf
+
 var a = 30;
+print(a);
+a = "Hi!";
 
 print(a);
-
-a(); // sdfojisdf
 
 function b() {
     print(50);

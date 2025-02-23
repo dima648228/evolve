@@ -562,7 +562,7 @@ class Parser:
         """
         Обрабатывает термы (умножение и деление) в выражениях.
         """
-        return self.bin_op(self.factor, (TokenType.T_MULTIPLY, TokenType.T_DIVIDE))
+        return self.bin_op(self.factor, (TokenType.T_MULTIPLY, TokenType.T_DIVIDE, TokenType.T_MODULO))
 
     def expression(self):
         """

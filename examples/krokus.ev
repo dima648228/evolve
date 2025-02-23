@@ -1,30 +1,8 @@
-var c = 0;
+var a = 4;
 
-
-function a() {
-    function a() {
-        c = c + 1;
-        if (c < 11) {
-            print("kakashka");
-
-            a();
-        }
-    }
-    a();
-
-    print("Hello!");
+if (a%2 == 0) {
+    print("Can be divided");
 }
-
-a(); // sdfojisdf
-
-var a = 30;
-print(a);
-a = "Hi!";
-
-print(a);
-
-function b() {
-    print(50);
+else {
+    print("Cannot be divided");
 }
-
-b();

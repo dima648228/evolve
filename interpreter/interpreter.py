@@ -56,6 +56,13 @@ class Number(Value):
                 other.pos_start, other.pos_end, 'Division by zero', self.context
             )
         return self._binary_op(other, lambda a, b: a / b, 'division')
+    
+    def modulo_of(self, other):
+        if isinstance(other, Number) and other.value == 0:
+            return None, RTError(
+                other.pos_start, other.pos_end, 'Division by zero', self.context
+            )
+        return self._binary_op(other, lambda a, b: a % b, 'modulo')
 
     def greater_than(self, other):
         return self._binary_op(other, lambda a, b: a > b, 'comparsion_gt')
@@ -101,6 +108,9 @@ class String(Value):
 
     def dived_by(self, other):
         return None, self.illegal_operation(other)
+    
+    def modulo_of(self, other):
+        return None, self.illegal_operation(other)
 
     def greater_than(self, other):
         return None, self.type_error(other, '>')
@@ -145,6 +155,9 @@ class Boolean(Value):
         return None, self.illegal_operation(other)
 
     def dived_by(self, other):
+        return None, self.illegal_operation(other)
+    
+    def modulo_of(self, other):
         return None, self.illegal_operation(other)
 
     def greater_than(self, other):
@@ -490,6 +503,8 @@ class Interpreter:
             result, error = left.multed_by(right)
         elif node.op_tok.type == TokenType.T_DIVIDE:
             result, error = left.dived_by(right)
+        elif node.op_tok.type == TokenType.T_MODULO:
+            result, error = left.modulo_of(right)
         elif node.op_tok.type == TokenType.T_GT:
             result, error = left.greater_than(right)
         elif node.op_tok.type == TokenType.T_LT:

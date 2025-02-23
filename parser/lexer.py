@@ -74,6 +74,7 @@ class Lexer:
             '-': TokenType.T_MINUS,
             '*': TokenType.T_MULTIPLY,
             '/': TokenType.T_DIVIDE,
+            '%': TokenType.T_MODULO,
             '=': TokenType.T_EQUAL,
             '>': TokenType.T_GT,
             '<': TokenType.T_LT,
